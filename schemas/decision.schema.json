@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/arbiter/schemas/decision.schema.json",
+  "title": "Policy Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "engine",
+    "engine_version",
+    "evaluated_at",
+    "decision",
+    "reasons",
+    "policy_hash",
+    "input_hash",
+    "decision_hash",
+    "matched_rule_id"
+  ],
+  "properties": {
+    "schema": { "const": "policy.decision.v1" },
+    "engine": { "const": "arbiter.v1" },
+    "engine_version": { "type": "string", "minLength": 1 },
+
+    "evaluated_at": { "type": "string", "description": "RFC3339 timestamp; deterministic per caller contract." },
+
+    "decision": { "type": "string", "enum": ["allow", "deny", "quarantine"] },
+    "matched_rule_id": { "type": ["string", "null"] },
+
+    "reasons": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+
+    "obligations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type"],
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "params": { "type": "object" }
+        }
+      }
+    },
+
+    "policy_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "input_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "decision_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "namespace": { "type": "string", "minLength": 1 },
+        "key_id": { "type": "string", "minLength": 1 },
+        "sig": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
