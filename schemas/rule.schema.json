@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/arbiter/schemas/rule.schema.json",
+  "title": "Policy Rule v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "when", "effect", "reasons"],
+  "properties": {
+    "schema": { "const": "policy.rule.v1" },
+
+    "id": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+
+    "effect": { "type": "string", "enum": ["allow", "deny", "quarantine"] },
+
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+
+    "obligations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/obligation" }
+    },
+
+    "when": { "$ref": "#/$defs/condition" }
+  },
+
+  "$defs": {
+    "pointer": {
+      "type": "string",
+      "pattern": "^\\$\\.(?:[A-Za-z_][A-Za-z0-9_]*)(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$",
+      "description": "Path like $.artifact.namespace"
+    },
+
+    "valueOrPointer": {
+      "oneOf": [
+        { "$ref": "#/$defs/pointer" },
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "integer" },
+        { "type": "boolean" },
+        { "type": "null" },
+        { "type": "array" },
+        { "type": "object" }
+      ]
+    },
+
+    "condition": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "oneOf": [
+        { "required": ["all"], "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } } },
+        { "required": ["any"], "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } } },
+        { "required": ["not"], "properties": { "not": { "$ref": "#/$defs/condition" } } },
+
+        { "required": ["exists"], "properties": { "exists": { "$ref": "#/$defs/pointer" } } },
+
+        { "required": ["eq"],  "properties": { "eq":  { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+        { "required": ["neq"], "properties": { "neq": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+
+        { "required": ["lt"],  "properties": { "lt":  { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+        { "required": ["lte"], "properties": { "lte": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+        { "required": ["gt"],  "properties": { "gt":  { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+        { "required": ["gte"], "properties": { "gte": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+
+        { "required": ["in"], "properties": { "in": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+        { "required": ["contains"], "properties": { "contains": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/valueOrPointer" } } } },
+
+        {
+          "required": ["lt_days"],
+          "properties": {
+            "lt_days": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": [
+                { "$ref": "#/$defs/valueOrPointer" },
+                { "$ref": "#/$defs/valueOrPointer" },
+                { "type": "integer", "minimum": 0 }
+              ]
+            }
+          }
+        },
+        {
+          "required": ["gte_days"],
+          "properties": {
+            "gte_days": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": [
+                { "$ref": "#/$defs/valueOrPointer" },
+                { "$ref": "#/$defs/valueOrPointer" },
+                { "type": "integer", "minimum": 0 }
+              ]
+            }
+          }
+        }
+      ]
+    },
+
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "params": { "type": "object" }
+      }
+    }
+  }
+}
