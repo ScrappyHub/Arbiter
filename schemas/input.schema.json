@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/arbiter/schemas/input.schema.json",
+  "title": "Policy Input v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "env", "artifact", "trust"],
+  "properties": {
+    "schema": { "const": "policy.input.v1" },
+
+    "env": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["now", "mode"],
+      "properties": {
+        "now": { "type": "string", "description": "RFC3339 timestamp (use UTC Z)." },
+        "mode": { "type": "string", "enum": ["ingest", "publish", "restore", "verify", "other"] },
+        "verifier": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "principal": { "type": "string" },
+            "key_id": { "type": "string" },
+            "product": { "type": "string" },
+            "instance": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace"],
+      "properties": {
+        "namespace": { "type": "string", "minLength": 1 },
+        "created_at": { "type": "string", "description": "RFC3339 timestamp." },
+        "observed_at": { "type": "string", "description": "RFC3339 timestamp." },
+        "producer": { "type": "string" },
+        "producer_instance": { "type": "string" },
+        "signer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "principal": { "type": "string" },
+            "key_id": { "type": "string", "minLength": 1 },
+            "alg": { "type": "string" }
+          }
+        },
+        "hashes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "artifact_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "manifest_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "commit_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+          }
+        },
+        "claims": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional producer claims (e.g., strength=evidence|deterministic)."
+        }
+      }
+    },
+
+    "trust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_namespaces"],
+      "properties": {
+        "allowed_namespaces": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "allowed_key_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "allowed_principals": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inbox_dir": { "type": "string" },
+        "outbox_dir": { "type": "string" },
+        "quarantine_dir": { "type": "string" },
+        "receipts_dir": { "type": "string" }
+      }
+    }
+  }
+}
