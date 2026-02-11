@@ -1,0 +1,19 @@
+{
+  "schema": "policy.rule_file.v1",
+  "rules": [
+    {
+      "schema": "policy.rule.v1",
+      "id": "ingest.allow.device_pledge.trusted_recent.v1",
+      "description": "Allow trusted device pledge events when within 90 days.",
+      "effect": "allow",
+      "reasons": ["OK_DEVICE_PLEDGE_TRUSTED_RECENT"],
+      "when": {
+        "all": [
+          { "eq": ["$.artifact.namespace", "watchtower/device-pledge"] },
+          { "in": ["$.artifact.signer.key_id", "$.trust.allowed_key_ids"] },
+          { "lt_days": ["$.artifact.created_at", "$.env.now", 90] }
+        ]
+      }
+    }
+  ]
+}
