@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/arbiter/schemas/rule_file.schema.json",
+  "title": "Rule File v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "rules"],
+  "properties": {
+    "schema": { "const": "policy.rule_file.v1" },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "rule.schema.json" }
+    }
+  }
+}
