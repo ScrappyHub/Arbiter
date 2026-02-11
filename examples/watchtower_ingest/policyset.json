@@ -1,0 +1,9 @@
+{
+  "schema": "policy.policyset.v1",
+  "name": "watchtower_ingest",
+  "version": "1.0.0",
+  "engine": "arbiter.v1",
+  "evaluation": { "mode": "FIRST_MATCH_WINS" },
+  "rule_files": ["rules/ingest.rules.json"],
+  "notes": "Example: allow trusted watchtower/device-pledge if recent; otherwise deny via default."
+}
