@@ -1,0 +1,25 @@
+{
+  "project_id": "arbiter",
+  "canonical_name": "Arbiter",
+  "ecosystem": {
+    "registry_schema": "constellation.service.registry.v1",
+    "service_id": "arbiter",
+    "ecosystem_family": "covenant",
+    "ecosystem_families": [
+      "covenant"
+    ],
+    "layer": "foundation.policy-law",
+    "role": "Deterministic machine law engine: evaluates declarative PolicySets against factual inputs and returns cryptographically attestable allow/deny/quarantine decisions (arbiter.v1, first match wins, default deny). Pure evaluation with no side effects; sits above Packet Constitution v1 transport integrity.",
+    "standalone_first": true,
+    "upstream_services": [],
+    "downstream_users": [],
+    "contract_families": [
+      "policy.policyset",
+      "policy.input",
+      "policy.decision"
+    ],
+    "service_map_path": "../Constellation/ecosystem/SERVICE_MAP.md",
+    "registry_path": "../Constellation/registry/services.json",
+    "integration_doc_path": "docs/canonical/ECOSYSTEM_INTEGRATION.md"
+  }
+}
